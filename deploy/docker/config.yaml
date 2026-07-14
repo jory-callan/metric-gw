@@ -1,0 +1,33 @@
+# metric-gw Docker 部署配置
+# 拷贝此文件后修改 backends 指向你的实际存储后端
+
+server:
+  listen: ":9201"
+  max_body_size: "10MB"
+
+auth:
+  mode: apikey
+  api_key: "change-me-to-a-real-key"
+
+buffer:
+  memory:
+    max_items: 100000
+  disk:
+    enabled: true
+    path: "/data/metric-gw"
+    max_size: "1GB"
+
+flush:
+  batch_size: 5000
+  interval: "1s"
+  timeout: "10s"
+  retry:
+    max_attempts: 0
+    backoff: exponential
+    initial_delay: "1s"
+    max_delay: "30s"
+
+backends:
+  - name: "vm-single"
+    type: vm_import
+    url: "http://vmsingle-monitoring:8429/api/v1/import"

@@ -1,0 +1,28 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: metric-gw
+  namespace: metric-gw
+  labels:
+    app: metric-gw
+  annotations:
+    cert-manager.io/cluster-issuer: internal-ca
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - metric-gw.czw-sre.internal
+      secretName: metric-gw-tls
+  rules:
+    - host: metric-gw.czw-sre.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: metric-gw
+                port:
+                  name: http

@@ -1,0 +1,27 @@
+# metric-gw Docker Compose 部署
+# 所有组件走 net-shared 网络
+
+services:
+  metric-gw:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: metric-gw:latest
+    container_name: metric-gw
+    restart: unless-stopped
+    networks:
+      - net-shared
+    ports:
+      - "9201:9201"
+    volumes:
+      - ./config.yaml:/etc/metric-gw/config.yaml:ro
+      - metric-gw-data:/data/metric-gw
+    environment:
+      TZ: Asia/Shanghai
+
+networks:
+  net-shared:
+    external: true
+
+volumes:
+  metric-gw-data:

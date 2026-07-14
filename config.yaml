@@ -1,0 +1,47 @@
+# metric-gw 示例配置
+
+server:
+  listen: ":9201"
+  max_body_size: "10MB"
+
+auth:
+  mode: apikey            # apikey | basic | none
+  api_key: "change-me-to-a-real-key"
+  # mode: basic 时使用:
+  # username: admin
+  # password: secret
+
+buffer:
+  memory:
+    max_items: 100000     # 每后端内存队列上限
+  disk:
+    enabled: true
+    path: "/data/metric-gw"
+    max_size: "1GB"       # 每后端磁盘队列上限
+
+flush:
+  batch_size: 5000        # 每批最大条数
+  interval: "1s"          # 最大刷新间隔
+  timeout: "10s"          # 后端请求超时
+  retry:
+    max_attempts: 0       # 0=无限重试
+    backoff: exponential  # exponential | fixed
+    initial_delay: "1s"
+    max_delay: "30s"
+
+backends:
+  # VictoriaMetrics - vm_import 协议 (Prometheus text format, 最高效)
+  - name: "vm-single"
+    type: vm_import
+    url: "http://vmsingle-monitoring:8429/api/v1/import"
+
+  # Prometheus - remote_write 协议 (protobuf + snappy)
+  # 需 Prometheus 启动参数: --web.enable-remote-write-receiver
+  - name: "prometheus"
+    type: remote_write
+    url: "http://prometheus-server:9090/api/v1/write"
+
+  # VMCluster - vminsert 入口
+  # - name: "vm-cluster"
+  #   type: vm_import
+  #   url: "http://vminsert-monitoring:8480/insert/0/prometheus/api/v1/import"

@@ -1,0 +1,17 @@
+# bin/
+bin/
+*.exe
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# Local config
+config.local.yaml
+
+# Data
+/data/

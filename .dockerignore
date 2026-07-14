@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# Build artifacts
+bin/
+*.exe
+
+# Config (CI 通过 K8s Secret 挂载，不进镜像)
+config.yaml
+config.local.yaml
+
+# Deploy manifests (CI 从 git 检出渲染，不进镜像)
+deploy/
+
+# CI
+.gitea/
+
+# Data
+/data/
+
+# Docs
+README.md
+AGENTS.md
+smoke-test.sh

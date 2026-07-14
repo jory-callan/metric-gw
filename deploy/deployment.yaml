@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-metric-gw
+  namespace: metric-gw
+  labels:
+    app: metric-gw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metric-gw
+  template:
+    metadata:
+      labels:
+        app: metric-gw
+      annotations:
+        # 配置变更时触发滚动更新 (CI 时 envsubst 替换为实际 hash)
+        checksum/config: "${CONFIG_HASH}"
+    spec:
+      containers:
+        - name: metric-gw
+          image: "${IMAGE}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9201
+              name: http
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          volumeMounts:
+            - name: config
+              mountPath: /etc/metric-gw/config.yaml
+              subPath: config.yaml
+            - name: data
+              mountPath: /data/metric-gw
+      volumes:
+        - name: config
+          secret:
+            secretName: metric-gw-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: metric-gw-data
