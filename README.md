@@ -98,7 +98,7 @@ flush:
 backends:
   - name: "vm-single"
     type: vm_import
-    url: "http://vmsingle-monitoring:8429/api/v1/import"
+    url: "http://vmsingle-monitoring:8428/api/v1/import"
   - name: "prometheus"
     type: remote_write
     url: "http://prometheus-server:9090/api/v1/write"

@@ -30,4 +30,4 @@ flush:
 backends:
   - name: "vm-single"
     type: vm_import
-    url: "http://vmsingle-monitoring:8429/api/v1/import"
+    url: "http://vmsingle-monitoring:8428/api/v1/import"
